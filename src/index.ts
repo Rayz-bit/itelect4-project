@@ -1,4 +1,4 @@
-import type { User, Course, Submission } from "../types/index";
+import type { User, Course, Submission } from "./types/index";
 
 // ===== PRIMITIVE TYPE ANNOTATIONS =====
 const projectName: string = "itelect4-project";
@@ -38,7 +38,7 @@ console.log(student);
 console.log(course);
 
 // ===== TYPE NARROWING =====
-import type { StringOrNumber } from "../types/index";
+import type { StringOrNumber } from "./types/index";
 // Narrowing with typeof
 // Without the if-check, TypeScript would error:
 // Property 'toUpperCase' does not exist on type 'number'
@@ -81,7 +81,7 @@ console.log(firstUser?.name); // Juan dela Cruz
 console.log(foundUser?.email); // juan@example.com
 
 // ===== USING UTILITY TYPES =====
-import { UserUpdate, UserPreview, PublicUser, RoleCount } from "../types/index";
+import { UserUpdate, UserPreview, PublicUser, RoleCount } from "./types/index";
 // Partial<T> -- update payload only needs the changed fields
 const patch: UserUpdate = { name: "Juan D. Cruz" };
 // Pick<T,K> -- a lightweight preview object
@@ -99,7 +99,7 @@ type NewSubmission = ReturnType<typeof makeSubmission>;
 const gt1Submission: NewSubmission = makeSubmission("ITELECT4");
 
 // ===== USING ENUMS =====
-import { SubmissionStatus, Role } from "../types/index";
+import { SubmissionStatus, Role } from "./types/index";
 let status: SubmissionStatus = SubmissionStatus.Pending;
 console.log(SubmissionStatus[status]); // "Pending" -- reverse mapping
 status = SubmissionStatus.Graded;

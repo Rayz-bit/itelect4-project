@@ -1,39 +1,39 @@
 // src/sample.ts
-import type { User } from "../types/index";
+import type { User } from "./types/index";
 
-// Function: getUser 
-// We combine User with { score: number } so TypeScript knows the returned object includes a score.
-function getUser(id: number): User & { score: number } {
+// Function: getUser
+// We combine User with { checkedIn: boolean } so TypeScript knows the returned object includes check-in status.
+function getUser(id: number): User & { checkedIn: boolean } {
   return {
     id: id,
     name: "Rayz Gabriel Lasi",
     email: "rayzgabriel.lasi@example.com",
-    role: "student",
+    role: "attendee",
     isActive: true,
-    score: 95.5, 
+    checkedIn: true,
   };
 }
 
-// Function: calculateGrade
-function calculateGrade(score: number, maxScore: number): string {
-  const percentage: number = (score / maxScore) * 100;
-  if (percentage >= 90) return "A";
-  if (percentage >= 80) return "B";
-  if (percentage >= 70) return "C";
-  return "F";
+// Function: getRsvpSummary
+function getRsvpSummary(confirmed: number, capacity: number): string {
+  const percentage: number = (confirmed / capacity) * 100;
+  if (percentage >= 90) return "Nearly full";
+  if (percentage >= 70) return "Filling up";
+  if (percentage >= 40) return "Open";
+  return "Just opened";
 }
 
-// Function: formatCourse
-function formatCourse(name: string, units: number, semester: string): string {
-  return `${name} (${units} units) - ${semester}`;
+// Function: formatEvent
+function formatEvent(title: string, capacity: number, location: string): string {
+  return `${title} (${capacity} seats) - ${location}`;
 }
 
 // Usage
 const user = getUser(1);
 console.log(user);
 
-const grade: string = calculateGrade(85, 100);
-console.log(grade);
+const rsvpSummary: string = getRsvpSummary(85, 100);
+console.log(rsvpSummary);
 
-const courseInfo: string = formatCourse("IT Elective 4", 3, "1st Semester");
-console.log(courseInfo);
+const eventInfo: string = formatEvent("Tech Meetup 2026", 100, "Main Auditorium");
+console.log(eventInfo);
