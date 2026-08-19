@@ -8,7 +8,7 @@ interface RsvpBadgeProps {
 
 const RsvpBadge: React.FC<RsvpBadgeProps> = ({ rsvp, children }) => {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <p className="text-gray-900 dark:text-white">
         Status: <span className="font-semibold capitalize">{rsvp.status}</span>
       </p>
