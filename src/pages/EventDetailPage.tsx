@@ -1,21 +1,28 @@
-// src/pages/EventDetailPage.tsx -- NEW FILE
+// src/pages/EventDetailPage.tsx -- the finished file
+import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router";
+import type { Event } from "../types/index";
 import EventCard from "../components/EventCard";
-import { allEvents } from "../data/mockData";
+import { fetchEventById } from "../api/client";
 
 function EventDetailPage() {
-  // Reads whatever is in the :eventId slot of the URL
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
 
-  // Turn that string into a real Event object
-  const event = allEvents.find((e) => e.id === Number(eventId));
+  const { data, isPending, isError, error } = useQuery<Event>({
+    queryKey: ["events", eventId],
+    queryFn: () => fetchEventById(eventId!),
+    enabled: eventId !== undefined,
+  });
 
-  // The URL is user input -- they can type anything. Handle that.
-  if (event === undefined) {
+  if (isPending) {
+    return <div className="animate-pulse p-6">Loading event...</div>;
+  }
+
+  if (isError) {
     return (
       <div className="rounded-lg bg-red-50 p-4 text-red-700">
-        No event found with id "{eventId}".
+        {error.message}
       </div>
     );
   }
@@ -23,11 +30,11 @@ function EventDetailPage() {
   return (
     <div>
       <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
-        {event.title}
+        {data.title}
       </h2>
 
       <div className="max-w-sm">
-        <EventCard event={event} />
+        <EventCard event={data} />
       </div>
 
       <button

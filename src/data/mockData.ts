@@ -1,8 +1,10 @@
-// src/data/mockData.ts -- NEW FILE
-// Session 5 kept `attendee` and `mockEvent` at the top of App.tsx. Several
-// pages need that data now, so it moves into its own file.
-import type { User, Event, RSVP } from "../types/index";
-import { RsvpStatus } from "../types/index";
+// src/data/mockData.ts -- the finished file
+// allEvents and allRsvps are DELETED. They live in db.json now,
+// and the app fetches them instead of importing them.
+//
+// `attendee` stays. There is no /users endpoint and no real login until
+// a later module -- the Home page's user is still hard-coded, on purpose.
+import type { User } from "../types/index";
 
 export const attendee: User = {
   id: 1,
@@ -12,46 +14,5 @@ export const attendee: User = {
   isActive: true,
 };
 
-export const allEvents: Event[] = [
-  {
-    id: 1,
-    title: "Tech Meetup 2026",
-    date: new Date(),
-    location: "Main Auditorium",
-    capacity: 100,
-    organizerId: 2,
-  },
-  {
-    id: 2,
-    title: "AI Workshop",
-    date: new Date(),
-    location: "Room 301",
-    capacity: 40,
-    organizerId: 2,
-  },
-  {
-    id: 3,
-    title: "Career Fair 2026",
-    date: new Date(),
-    location: "Gymnasium",
-    capacity: 300,
-    organizerId: 3,
-  },
-];
-
-export const allRsvps: RSVP[] = [
-  {
-    id: 1,
-    userId: 1,
-    eventId: 1,
-    status: RsvpStatus.Confirmed,
-    respondedAt: new Date(),
-  },
-  {
-    id: 2,
-    userId: 1,
-    eventId: 2,
-    status: RsvpStatus.Pending,
-    respondedAt: new Date(),
-  },
-];
+// HomePage is the only file that still imports from here, and
+// HomePage does not change at all.

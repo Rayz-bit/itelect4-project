@@ -1,4 +1,4 @@
-// src/App.tsx -- REPLACE the whole file (final version)
+//
 import { Routes, Route } from "react-router";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";

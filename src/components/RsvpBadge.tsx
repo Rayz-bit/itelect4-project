@@ -1,9 +1,9 @@
-// src/components/RsvpBadge.tsx
-import type { RSVP } from "../types/index";
+// src/components/RsvpBadge.tsx -- two lines are different
+import type { ApiRsvp } from "../types/index"; // was RSVP
 
 interface RsvpBadgeProps {
-  rsvp: RSVP;
-  children?: React.ReactNode;
+  rsvp: ApiRsvp; // <-- was RSVP
+  children?: React.ReactNode; // UNCHANGED
 }
 
 const RsvpBadge: React.FC<RsvpBadgeProps> = ({ rsvp, children }) => {
@@ -13,7 +13,7 @@ const RsvpBadge: React.FC<RsvpBadgeProps> = ({ rsvp, children }) => {
         Status: <span className="font-semibold capitalize">{rsvp.status}</span>
       </p>
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        Responded: {rsvp.respondedAt.toLocaleDateString()}
+        Responded: {new Date(rsvp.respondedAt).toLocaleDateString()}
       </p>
       {children}
     </div>
