@@ -1,47 +1,38 @@
-// src/pages/EventsPage.tsx -- NEW FILE
-import { useState, useEffect, useRef } from "react";
+// src/pages/EventsPage.tsx -- the finished file
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import type { Event } from "../types/index";
 import EventCard from "../components/EventCard";
 import usePrevious from "../hooks/usePrevious";
-import { allEvents } from "../data/mockData";
+import useUiStore from "../store/uiStore";
+import { fetchEvents } from "../api/client";
 
 function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const { data, isPending, isError, error } = useQuery<Event[]>({
+    queryKey: ["events"],
+    queryFn: fetchEvents,
+  });
+
+  const searchTerm = useUiStore((state) => state.searchTerm);
+  const setSearchTerm = useUiStore((state) => state.setSearchTerm);
   const previousSearch = usePrevious(searchTerm);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setEvents(allEvents);
-      setIsLoading(false);
-    }, 500);
-  }, []);
-
-  const handleSearchChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => setSearchTerm(e.target.value);
-
-  // Matches the location as well as the title -- typing "auditorium" has to work
-  const filteredEvents = events.filter((e) =>
-    e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    e.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  if (isLoading) {
+  if (isPending) {
     return <div className="animate-pulse p-6">Loading events...</div>;
   }
 
   if (isError) {
     return (
       <div className="rounded-lg bg-red-50 p-4 text-red-700">
-        Could not load events.
+        {error.message} -- is json-server running on port 3001?
       </div>
     );
   }
+
+  const filteredEvents = data.filter((e) =>
+    e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
@@ -49,17 +40,9 @@ function EventsPage() {
         Events
       </h2>
 
-      <button
-        onClick={() => setIsError(true)}
-        className="mb-2 rounded bg-red-100 px-2 py-1 text-xs text-red-700"
-      >
-        Simulate Error
-      </button>
-
       <input
-        ref={searchInputRef}
         value={searchTerm}
-        onChange={handleSearchChange}
+        onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search events..."
         className="w-full rounded border border-gray-300 p-2"
       />

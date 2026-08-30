@@ -1,0 +1,16 @@
+{
+  "events": [
+    { "id": "1", "title": "Tech Meetup 2026", "date": "2026-09-15T09:00:00.000Z",
+      "location": "Main Auditorium", "capacity": 100, "organizerId": 2 },
+    { "id": "2", "title": "AI Workshop", "date": "2026-09-20T13:00:00.000Z",
+      "location": "Room 301", "capacity": 40, "organizerId": 2 },
+    { "id": "3", "title": "Career Fair 2026", "date": "2026-10-01T08:00:00.000Z",
+      "location": "Gymnasium", "capacity": 300, "organizerId": 3 }
+  ],
+  "rsvps": [
+    { "id": "1", "userId": 1, "eventId": "1", "status": "confirmed",
+      "respondedAt": "2026-08-01T09:00:00.000Z" },
+    { "id": "2", "userId": 1, "eventId": "2", "status": "pending",
+      "respondedAt": "2026-08-05T09:00:00.000Z" }
+  ]
+}

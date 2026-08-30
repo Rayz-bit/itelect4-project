@@ -74,7 +74,7 @@ export type RoleCount = Record<"attendee" | "organizer", number>;
 function makeRsvp(userId: number, eventId: number) {
   return { id: 1, userId, eventId, status: RsvpStatus.Pending, respondedAt: new Date() };
 }
-export type NewRsvp = ReturnType<typeof makeRsvp>;
+export type MakeRsvpResult = ReturnType<typeof makeRsvp>;
 
 // ===== ENUMS =====
 // Multi-step status lifecycle: pending -> confirmed -> waitlisted
@@ -88,3 +88,16 @@ export const enum Role {
   Attendee = "attendee",
   Organizer = "organizer",
 }
+
+// JSON has no Date, and json-server writes ids as strings. So what the
+// API hands back is NOT the RSVP shape declared above.
+// Both types below are DERIVED from it, so RSVP stays the single
+// source of truth -- add a field there and these two inherit it.
+export type ApiRsvp = Omit<RSVP, "id" | "eventId" | "respondedAt"> & {
+  id: string; // json-server ids look like "z4U3v8og06g"
+  eventId: string; // also a string in the raw JSON, not a number
+  respondedAt: string; // an ISO string, never a Date object
+};
+
+// What we SEND when creating one. No id yet -- the server makes it.
+export type NewRsvp = Omit<ApiRsvp, "id">;

@@ -1,20 +1,20 @@
-// src/components/Layout.tsx -- NEW FILE
 import { NavLink, Outlet } from "react-router";
-import useToggle from "../hooks/useToggle";
 import useAuthStore from "../store/authStore";
+import useUiStore from "../store/uiStore"; // <-- NEW
 
 function Layout() {
-  // Dark mode MOVES here, out of the old App.tsx
-  const [isDarkMode, toggleDarkMode] = useToggle(false);
-  const userName = useAuthStore((state) => state.userName);
-  const logout = useAuthStore((state) => state.logout);
+  // Dark mode now comes from the store, not useToggle
+  const isDarkMode = useUiStore((state) => state.isDarkMode); // <-- NEW
+  const toggleDarkMode = useUiStore((state) => state.toggleDarkMode); // <-- NEW
+
+  const userName = useAuthStore((state) => state.userName); // UNCHANGED
+  const logout = useAuthStore((state) => state.logout); // UNCHANGED
 
   // The classes every nav link shares, then the two variants
   const base = "rounded px-3 py-1.5 text-sm";
   const activeLink = `${base} bg-blue-600 font-semibold text-white`;
   const idleLink = `${base} text-gray-700 hover:bg-gray-200 dark:text-gray-300`;
 
-  // NavLink hands this function an isActive flag on every render
   const linkClass = ({ isActive }: { isActive: boolean }): string =>
     isActive ? activeLink : idleLink;
 
@@ -49,11 +49,11 @@ function Layout() {
         </nav>
 
         <main className="p-6">
-          <Outlet /> {/* <-- THE HOLE */}
+          <Outlet />
         </main>
       </div>
     </div>
   );
 }
 
-export default Layout;  
+export default Layout;
