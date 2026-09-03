@@ -1,13 +1,13 @@
-// src/components/EventCard.tsx -- REPLACE the whole file
+// src/components/EventCard.tsx
 import type { Event } from "../types/index";
 
 interface EventCardProps {
   event: Event;
-  variant?: "default" | "compact"; // <-- NEW: the optional variant prop
+  variant?: "default" | "compact";
 }
 
 function EventCard({ event, variant = "default" }: EventCardProps) {
-  const isCompact = variant === "compact"; // <-- NEW
+  const isCompact = variant === "compact";
 
   return (
     <div className={`rounded-lg border border-gray-200 bg-white shadow-sm
@@ -16,11 +16,11 @@ function EventCard({ event, variant = "default" }: EventCardProps) {
         ${isCompact ? "text-sm" : "text-lg"}`}>
         {event.title}
       </h3>
-      {!isCompact && ( // <-- NEW: compact hides the location
+      {!isCompact && (
         <p className="text-gray-600 dark:text-gray-300">{event.location}</p>
       )}
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        {event.date.toLocaleDateString()} -- Capacity: {event.capacity}
+        {new Date(event.date).toLocaleDateString()} -- Capacity: {event.capacity}
       </p>
     </div>
   );

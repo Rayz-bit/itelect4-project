@@ -1,5 +1,4 @@
-// src/api/client.ts -- a NEW file
-// Every call to json-server lives in this one file.
+// src/api/client.ts
 import type { Event, ApiRsvp, NewRsvp } from "../types/index";
 
 export const API_URL = "http://localhost:3001";
@@ -13,17 +12,13 @@ export async function fetchEvents(): Promise<Event[]> {
   return res.json();
 }
 
-// GET /events?id=1 -> an ARRAY of matches, not one event
+// GET /events/:id -> a single event, using the REST path style
 export async function fetchEventById(id: string): Promise<Event> {
-  const res = await fetch(`${API_URL}/events?id=${id}`);
+  const res = await fetch(`${API_URL}/events/${id}`);
   if (!res.ok) {
-    throw new Error("Could not load that event");
-  }
-  const matches: Event[] = await res.json();
-  if (matches.length === 0) {
     throw new Error(`No event found with id "${id}".`);
   }
-  return matches[0];
+  return res.json();
 }
 
 // GET /rsvps -> the whole list
