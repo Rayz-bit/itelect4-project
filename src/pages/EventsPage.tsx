@@ -44,7 +44,7 @@ function EventsPage() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search events..."
-        className="w-full rounded border border-gray-300 p-2"
+        className="w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
       />
 
       {previousSearch !== undefined && previousSearch !== searchTerm && (
