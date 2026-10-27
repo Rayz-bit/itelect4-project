@@ -1,14 +1,11 @@
-// src/pages/ProfilePage.tsx -- the finished file
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ApiRsvp, Event } from "../types/index";
-import { RsvpStatus } from "../types/index";
+import type { ApiEvent, ApiRsvp } from "../types/index";
 import { rsvpSchema } from "../schemas/rsvpSchema";
 import type { RsvpFormValues } from "../schemas/rsvpSchema";
 import RsvpBadge from "../components/RsvpBadge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { fetchRsvps, createRsvp, fetchEvents } from "../api/client";
 
@@ -26,16 +23,19 @@ function ProfilePage() {
     defaultValues: { eventId: "" },
   });
 
+  // READ -- my RSVPs (private: needs the token)
   const { data, isPending, isError } = useQuery<ApiRsvp[]>({
     queryKey: ["rsvps"],
     queryFn: fetchRsvps,
   });
 
-  const { data: events, isPending: eventsPending } = useQuery<Event[]>({
+  // READ -- the events list, for the dropdown and the titles
+  const { data: events, isPending: eventsPending } = useQuery<ApiEvent[]>({
     queryKey: ["events"],
     queryFn: fetchEvents,
   });
 
+  // WRITE -- the server fills in the owner, status and date
   const addRsvp = useMutation({
     mutationFn: createRsvp,
     onSuccess: () => {
@@ -45,12 +45,7 @@ function ProfilePage() {
   });
 
   const onSubmit = (values: RsvpFormValues): void => {
-    addRsvp.mutate({
-      userId: 1,
-      eventId: values.eventId,
-      status: RsvpStatus.Pending,
-      respondedAt: new Date().toISOString(),
-    });
+    addRsvp.mutate({ eventId: values.eventId });
   };
 
   if (isPending || eventsPending) {
@@ -77,22 +72,32 @@ function ProfilePage() {
       >
         <div className="grid gap-1.5">
           <Label htmlFor="eventId" className="text-foreground">
-            Event ID
+            Event
           </Label>
-          <Input
+          <select
             id="eventId"
             {...register("eventId")}
             aria-invalid={errors.eventId ? true : undefined}
-            placeholder="e.g. 1"
-            className="dark:text-white"
-          />
+            className="h-8 w-full rounded-lg border border-input bg-background px-2.5 text-sm text-foreground aria-invalid:border-destructive"
+          >
+            <option value="">Select an event...</option>
+            {events?.map((e) => (
+              <option key={e._id} value={e._id}>
+                {e.title}
+              </option>
+            ))}
+          </select>
           {errors.eventId && (
             <p className="text-sm text-red-600">{errors.eventId.message}</p>
           )}
         </div>
 
-        <Button type="submit" disabled={addRsvp.isPending} className="justify-self-start">
-          {addRsvp.isPending ? "Saving..." : "Add RSVP"}
+        <Button
+          type="submit"
+          disabled={addRsvp.isPending}
+          className="justify-self-start"
+        >
+          {addRsvp.isPending ? "Saving..." : "RSVP"}
         </Button>
       </form>
 
@@ -102,11 +107,11 @@ function ProfilePage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {data.map((r) => {
-          const event = events?.find((e) => String(e.id) === r.eventId);
+          const event = events?.find((e) => e._id === r.eventId);
           return (
-            <RsvpBadge key={r.id} rsvp={r}>
+            <RsvpBadge key={r._id} rsvp={r}>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Event: {event?.title ?? "Unknown"} (ID: {r.eventId})
+                Event: {event?.title ?? "Unknown"}
               </p>
             </RsvpBadge>
           );

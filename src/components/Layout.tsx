@@ -1,14 +1,13 @@
 import { NavLink, Outlet } from "react-router";
 import useAuthStore from "../store/authStore";
-import useUiStore from "../store/uiStore"; // <-- NEW
+import useUiStore from "../store/uiStore";
 
 function Layout() {
-  // Dark mode now comes from the store, not useToggle
-  const isDarkMode = useUiStore((state) => state.isDarkMode); // <-- NEW
-  const toggleDarkMode = useUiStore((state) => state.toggleDarkMode); // <-- NEW
+  const isDarkMode = useUiStore((state) => state.isDarkMode);
+  const toggleDarkMode = useUiStore((state) => state.toggleDarkMode);
 
-  const userName = useAuthStore((state) => state.userName); // UNCHANGED
-  const logout = useAuthStore((state) => state.logout); // UNCHANGED
+  const userName = useAuthStore((state) => state.userName);
+  const logout = useAuthStore((state) => state.logout);
 
   // The classes every nav link shares, then the two variants
   const base = "rounded px-3 py-1.5 text-sm";
@@ -30,7 +29,10 @@ function Layout() {
           <NavLink to="/profile" className={linkClass}>Profile</NavLink>
 
           {userName === null ? (
-            <NavLink to="/login" className={linkClass}>Login</NavLink>
+            <>
+              <NavLink to="/login" className={linkClass}>Login</NavLink>
+              <NavLink to="/register" className={linkClass}>Register</NavLink>
+            </>
           ) : (
             <button
               onClick={logout}

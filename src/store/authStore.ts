@@ -1,26 +1,24 @@
-//
 import { create } from "zustand";
-import { persist } from "zustand/middleware"; // <-- NEW
+import { persist } from "zustand/middleware";
 
 interface AuthState {
   token: string | null;
   userName: string | null;
-  login: (name: string) => void;
+  login: (token: string, name: string) => void;
   logout: () => void;
 }
 
-// The store from before, now wrapped in persist( ... )
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       token: null,
       userName: null,
-      login: (name) => set({ token: `demo-token-${name}`, userName: name }),
+      login: (token, name) => set({ token, userName: name }),
       logout: () => set({ token: null, userName: null }),
     }),
     {
       name: "itelect4-auth", // the localStorage key it writes to
-      partialize: (state) => ({ // save ONLY these two fields
+      partialize: (state) => ({
         token: state.token,
         userName: state.userName,
       }),

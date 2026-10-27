@@ -1,44 +1,106 @@
-// src/api/client.ts
-import type { Event, ApiRsvp, NewRsvp } from "../types/index";
+import type {
+  ApiEvent,
+  ApiRsvp,
+  NewRsvp,
+  LoginBody,
+  RegisterBody,
+  AuthResponse,
+  RegisterResponse,
+} from "../types/index";
+import useAuthStore from "../store/authStore";
 
-export const API_URL = "http://localhost:3001";
-
-// GET /events -> the whole list
-export async function fetchEvents(): Promise<Event[]> {
-  const res = await fetch(`${API_URL}/events`);
-  if (!res.ok) {
-    throw new Error("Could not load events");
-  }
-  return res.json();
+interface RequestOptions {
+  method?: "GET" | "POST" | "PUT" | "DELETE";
+  body?: unknown;
+  auth?: boolean; // true = attach the Bearer token
 }
 
-// GET /events/:id -> a single event, using the REST path style
-export async function fetchEventById(id: string): Promise<Event> {
-  const res = await fetch(`${API_URL}/events/${id}`);
-  if (!res.ok) {
-    throw new Error(`No event found with id "${id}".`);
-  }
-  return res.json();
-}
+// The one place that calls fetch.
+async function request<T>(
+  path: string,
+  options: RequestOptions = {}
+): Promise<T> {
+  const baseUrl: string | undefined = import.meta.env.VITE_API_URL;
 
-// GET /rsvps -> the whole list
-export async function fetchRsvps(): Promise<ApiRsvp[]> {
-  const res = await fetch(`${API_URL}/rsvps`);
-  if (!res.ok) {
-    throw new Error("Could not load RSVPs");
+  if (!baseUrl) {
+    throw new Error("VITE_API_URL is not set");
   }
-  return res.json();
-}
 
-// POST /rsvps -> create a new RSVP
-export async function createRsvp(newRsvp: NewRsvp): Promise<ApiRsvp> {
-  const res = await fetch(`${API_URL}/rsvps`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newRsvp),
+  const { method = "GET", body, auth = false } = options;
+  const headers: Record<string, string> = {};
+
+  if (body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (auth) {
+    const token = useAuthStore.getState().token;
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const res = await fetch(`${baseUrl}${path}`, {
+    method,
+    headers,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
   });
+
   if (!res.ok) {
-    throw new Error("Could not save the RSVP");
+    // An expired or invalid token: clear it so ProtectedRoute sends
+    // the user back to /login.
+    if (res.status === 401 && auth) {
+      useAuthStore.getState().logout();
+    }
+
+    let message = `Request failed (${res.status})`;
+    try {
+      const data = await res.json();
+      if (typeof data?.message === "string") {
+        message = data.message;
+      }
+    } catch {
+      // the reply had no JSON body; keep the default message
+    }
+    throw new Error(message);
   }
-  return res.json();
+
+  return res.json() as Promise<T>;
+}
+
+// ----- Public routes -----
+export function fetchEvents(): Promise<ApiEvent[]> {
+  return request<ApiEvent[]>("/api/events");
+}
+
+export function fetchEventById(id: string): Promise<ApiEvent> {
+  return request<ApiEvent>(`/api/events/${id}`);
+}
+
+// ----- Auth routes -----
+export function registerUser(body: RegisterBody): Promise<RegisterResponse> {
+  return request<RegisterResponse>("/api/auth/register", {
+    method: "POST",
+    body,
+  });
+}
+
+export function loginUser(body: LoginBody): Promise<AuthResponse> {
+  return request<AuthResponse>("/api/auth/login", {
+    method: "POST",
+    body,
+  });
+}
+
+// ----- Private routes (Bearer token) -----
+export function fetchRsvps(): Promise<ApiRsvp[]> {
+  return request<ApiRsvp[]>("/api/rsvps", { auth: true });
+}
+
+export function createRsvp(newRsvp: NewRsvp): Promise<ApiRsvp> {
+  return request<ApiRsvp>("/api/rsvps", {
+    method: "POST",
+    body: newRsvp,
+    auth: true,
+  });
 }

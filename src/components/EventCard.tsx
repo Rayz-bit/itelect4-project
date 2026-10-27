@@ -1,8 +1,7 @@
-// src/components/EventCard.tsx
-import type { Event } from "../types/index";
+import type { ApiEvent } from "../types/index";
 
 interface EventCardProps {
-  event: Event;
+  event: ApiEvent;
   variant?: "default" | "compact";
 }
 
