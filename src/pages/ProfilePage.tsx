@@ -24,7 +24,7 @@ function ProfilePage() {
   });
 
   // READ -- my RSVPs (private: needs the token)
-  const { data, isPending, isError } = useQuery<ApiRsvp[]>({
+  const { data, isPending, isError, error } = useQuery<ApiRsvp[]>({
     queryKey: ["rsvps"],
     queryFn: fetchRsvps,
   });
@@ -55,7 +55,7 @@ function ProfilePage() {
   if (isError) {
     return (
       <div className="rounded-lg bg-red-50 p-4 text-red-700">
-        Could not load RSVPs.
+        Could not load RSVPs: {error.message}
       </div>
     );
   }
