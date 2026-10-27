@@ -1,14 +1,13 @@
-// src/pages/EventsPage.tsx -- the finished file
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
-import type { Event } from "../types/index";
+import type { ApiEvent } from "../types/index";
 import EventCard from "../components/EventCard";
 import usePrevious from "../hooks/usePrevious";
 import useUiStore from "../store/uiStore";
 import { fetchEvents } from "../api/client";
 
 function EventsPage() {
-  const { data, isPending, isError, error } = useQuery<Event[]>({
+  const { data, isPending, isError, error } = useQuery<ApiEvent[]>({
     queryKey: ["events"],
     queryFn: fetchEvents,
   });
@@ -24,7 +23,7 @@ function EventsPage() {
   if (isError) {
     return (
       <div className="rounded-lg bg-red-50 p-4 text-red-700">
-        {error.message} -- is json-server running on port 3001?
+        {error.message} -- is the API reachable?
       </div>
     );
   }
@@ -55,7 +54,7 @@ function EventsPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filteredEvents.map((event) => (
-          <Link key={event.id} to={`/events/${event.id}`}>
+          <Link key={event._id} to={`/events/${event._id}`}>
             <EventCard event={event} />
           </Link>
         ))}

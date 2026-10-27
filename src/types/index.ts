@@ -89,15 +89,52 @@ export const enum Role {
   Organizer = "organizer",
 }
 
-// JSON has no Date, and json-server writes ids as strings. So what the
-// API hands back is NOT the RSVP shape declared above.
-// Both types below are DERIVED from it, so RSVP stays the single
-// source of truth -- add a field there and these two inherit it.
-export type ApiRsvp = Omit<RSVP, "id" | "eventId" | "respondedAt"> & {
-  id: string; // json-server ids look like "z4U3v8og06g"
-  eventId: string; // also a string in the raw JSON, not a number
-  respondedAt: string; // an ISO string, never a Date object
+// ===== TYPES FOR THE EXPRESS + MONGODB API =====
+// Derived from the Session 1 interfaces, so those stay the source of truth.
+// MongoDB sends _id (a string), and JSON turns every Date into a string.
+
+export type ApiUser = Omit<User, "id" | "isActive"> & {
+  id: string;
 };
 
-// What we SEND when creating one. No id yet -- the server makes it.
-export type NewRsvp = Omit<ApiRsvp, "id">;
+export type ApiEvent = Omit<Event, "id" | "date" | "organizerId"> & {
+  _id: string;
+  date: string;
+  organizerId: string;
+};
+
+export type ApiRsvp = Omit<
+  RSVP,
+  "id" | "userId" | "eventId" | "respondedAt"
+> & {
+  _id: string;
+  userId: string;
+  eventId: string;
+  respondedAt: string;
+};
+
+// What we SEND to create an RSVP: only the event.
+// The server fills in the owner (from the token), the status and the date.
+export type NewRsvp = Pick<ApiRsvp, "eventId">;
+
+// Auth request and response shapes
+export interface LoginBody {
+  email: string;
+  password: string;
+}
+
+export interface RegisterBody {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: ApiUser;
+}
+
+export interface RegisterResponse {
+  message: string;
+  user: ApiUser;
+}

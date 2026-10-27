@@ -1,7 +1,6 @@
-// src/pages/EventDetailPage.tsx -- the finished file
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router";
-import type { Event } from "../types/index";
+import type { ApiEvent } from "../types/index";
 import EventCard from "../components/EventCard";
 import { fetchEventById } from "../api/client";
 
@@ -9,7 +8,7 @@ function EventDetailPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
 
-  const { data, isPending, isError, error } = useQuery<Event>({
+  const { data, isPending, isError, error } = useQuery<ApiEvent>({
     queryKey: ["events", eventId],
     queryFn: () => fetchEventById(eventId!),
     enabled: eventId !== undefined,
