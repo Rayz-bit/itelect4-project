@@ -20,11 +20,14 @@ async function request<T>(
   path: string,
   options: RequestOptions = {}
 ): Promise<T> {
-  const baseUrl: string | undefined = import.meta.env.VITE_API_URL;
+  const rawUrl: string | undefined = import.meta.env.VITE_API_URL;
 
-  if (!baseUrl) {
+  if (!rawUrl) {
     throw new Error("VITE_API_URL is not set");
   }
+
+  // Drop any trailing slashes so we never build "//api/..."
+  const baseUrl = rawUrl.replace(/\/+$/, "");
 
   const { method = "GET", body, auth = false } = options;
   const headers: Record<string, string> = {};
