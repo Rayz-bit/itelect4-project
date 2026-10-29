@@ -138,3 +138,17 @@ export interface RegisterResponse {
   message: string;
   user: ApiUser;
 }
+// ===== TYPES FOR THE AI ROUTE =====
+// Mirrors the Review the backend validates before it sends it.
+export type Readiness = "ready" | "needs_work" | "not_ready";
+
+export interface AiReview {
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  readiness: Readiness;
+}
+
+export interface AiRequestBody {
+  prompt: string;
+}

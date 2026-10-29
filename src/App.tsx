@@ -7,6 +7,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
+import ReviewPage from "./pages/ReviewPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="review" element={<ReviewPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
