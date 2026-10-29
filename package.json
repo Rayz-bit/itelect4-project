@@ -3,14 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-"scripts": {
-  "dev": "vite",
-  "build": "tsc -b && vite build",
-  "lint": "eslint .",
-  "test": "vitest run --reporter=verbose",
-  "test:watch": "vitest",
-  "preview": "vite preview"
-},
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "test": "vitest run --reporter=verbose",
+    "test:watch": "vitest",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
     "@fontsource-variable/geist": "^5.3.0",
@@ -32,6 +32,8 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@eslint/js": "^10.0.1",
     "@tanstack/react-query-devtools": "^5.102.8",
     "@testing-library/jest-dom": "^7.0.1",
