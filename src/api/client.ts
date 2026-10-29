@@ -6,6 +6,9 @@ import type {
   RegisterBody,
   AuthResponse,
   RegisterResponse,
+  AiReview,
+  AiRequestBody,
+  
 } from "../types/index";
 import useAuthStore from "../store/authStore";
 
@@ -104,6 +107,14 @@ export function createRsvp(newRsvp: NewRsvp): Promise<ApiRsvp> {
   return request<ApiRsvp>("/api/rsvps", {
     method: "POST",
     body: newRsvp,
+    auth: true,
+  });
+}
+// ----- AI route (private): the browser never calls Gemini -----
+export function askAi(body: AiRequestBody): Promise<AiReview> {
+  return request<AiReview>("/api/ai", {
+    method: "POST",
+    body,
     auth: true,
   });
 }
